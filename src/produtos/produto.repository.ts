@@ -1,4 +1,4 @@
-import { Produto } from "src/models/produto";
+import { Produto } from "src/models/produto.entity";
 import { Injectable } from "@nestjs/common";
 import { v4 as uuidv4 } from 'uuid';
 

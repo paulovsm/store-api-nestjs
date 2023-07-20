@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common"
 import { AtualizaUsuarioDTO } from "src/dto/atualizaUsuarioDTO";
 import { CriaUsuarioDTO } from "src/dto/criaUsuarioDTO";
 import { ListaUsuarioDTO } from "src/dto/listaUsuarioDTO";
-import { Usuario } from "../models/usuario";
+import { Usuario } from "../models/usuario.entity";
 import { UsuarioRepository } from "./usuario.repository";
 
 @Controller('/usuarios')

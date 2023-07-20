@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common"
 import { AtualizaProdutoDTO } from "src/dto/atualizaProdutoDTO";
 import { CriaProdutoDTO } from "src/dto/criaProdutoDTO";
 import { ListaProdutoDTO } from "src/dto/listaProdutoDTO";
-import { Produto } from "src/models/produto";
+import { Produto } from "src/models/produto.entity";
 import { ProdutoRepository } from "./produto.repository";
 
 @Controller('/produtos')
