@@ -1,36 +1,39 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
-import { CaracteristicaProduto } from "./caracteristicaProduto"
-import { ImagemProduto } from "./imagemProduto"
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from 'typeorm';
+import { CaracteristicaProduto } from "./caracteristicaProduto.entity"
+import { ImagemProduto } from "./imagemProduto.entity"
 
 @Entity({ name: 'produtos'})
 export class Produto {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @Column({ nullable: false })
+    @Column({ name: 'usuario_id', length: 100, nullable: false })
+    usuarioId: string;
+
+    @Column({ name: 'nome', length: 100, nullable: false })
     nome: string;
 
-    @Column({ nullable: false })
+    @Column({ name: 'valor', nullable: false })
     valor: number;
 
-    @Column({ nullable: false })
+    @Column({ name: 'quantidade_disponivel', nullable: false })
     quantidadeDisponivel: number;
 
     @Column({ length: 255, nullable: false })
     descricao: string;
 
+    @Column({ name: 'categoria', length: 100, nullable: false })
+    categoria: string;
+
     caracteristicas: CaracteristicaProduto[];
     imagens: ImagemProduto[];
 
-    @Column({ nullable: false })
-    categoria: string;
-
-    @Column({ nullable: false })
+    @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', name: 'created_at' })
     dataCriacao: Date;
 
-    @Column({ nullable: false })
+    @UpdateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', name: 'updated_at' })
     dataAtualizacao: Date;
 
-    @Column({ name: 'usuario_id', length: 100, nullable: false })
-    usuarioId: string;
+    @DeleteDateColumn({ type: 'timestamp', nullable: true, name: 'deleted_at' })
+    dataRemocao: Date;
 }
