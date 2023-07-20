@@ -3,16 +3,16 @@ import { AtualizaProdutoDTO } from "src/dto/atualizaProdutoDTO";
 import { CriaProdutoDTO } from "src/dto/criaProdutoDTO";
 import { ListaProdutoDTO } from "src/dto/listaProdutoDTO";
 import { Produto } from "src/models/produto.entity";
-import { ProdutoRepository } from "./produto.repository";
+import { ProdutoService } from "./produto.service";
 
 @Controller('/produtos')
 export class ProdutosController {
-    constructor(private produtosRepository: ProdutoRepository) { }
+    constructor(private produtosService: ProdutoService) { }
 
     @Post()
     async criarProduto(@Body() produto: CriaProdutoDTO) {
         const produtoCriado = { ...produto } as Produto;
-        const idNovoProduto = await this.produtosRepository.create(produtoCriado);
+        const idNovoProduto = await this.produtosService.create(produtoCriado);
 
         return {
             id: idNovoProduto,
@@ -22,7 +22,7 @@ export class ProdutosController {
 
     @Get()
     async buscarTodos() {
-        const produtos = await this.produtosRepository.findAll();
+        const produtos = await this.produtosService.findAll();
 
         return produtos.map(({ id, nome, valor, descricao, categoria, dataCriacao, dataAtualizacao }) => {
             return {
@@ -33,7 +33,7 @@ export class ProdutosController {
 
     @Put(':id')
     async atualizarProduto(@Param('id') id: string, @Body() produtoAtualizadoDto: AtualizaProdutoDTO) {
-        const produtoAtualizado = await this.produtosRepository.update(id, produtoAtualizadoDto);
+        const produtoAtualizado = await this.produtosService.update(id, produtoAtualizadoDto);
 
         return {
             id: produtoAtualizado.id,
@@ -49,7 +49,7 @@ export class ProdutosController {
 
     @Delete(':id')
     async removerProduto(@Param('id') id: string) {
-        const produtoRemovido = await this.produtosRepository.delete(id);
+        const produtoRemovido = await this.produtosService.delete(id);
 
         return {
             id: produtoRemovido.id,
