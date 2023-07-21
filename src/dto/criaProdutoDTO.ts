@@ -1,5 +1,5 @@
 import { Type } from "class-transformer";
-import { ArrayMinSize, IsArray, IsDateString, IsNotEmpty, IsNumber, IsUUID, MaxLength, Min, ValidateNested } from "class-validator";
+import { ArrayMinSize, IsArray, IsDateString, IsNotEmpty, IsNumber, IsOptional, IsUUID, MaxLength, Min, ValidateNested } from "class-validator";
 import { CaracteristicaProdutoDTO } from "./caracteristicaProdutoDTO"
 import { ImagemProdutoDTO } from "./imagemProdutoDTO"
 
@@ -35,9 +35,11 @@ export class CriaProdutoDTO {
     categoria: string;
 
     @IsDateString({}, { message: 'A data de criação do produto deve ser uma data válida' })
+    @IsOptional()
     dataCriacao: Date;
 
     @IsDateString({}, { message: 'A data de atualização do produto deve ser uma data válida' })
+    @IsOptional()
     dataAtualizacao: Date;
 
     @IsUUID(4, { message: 'O id do usuário deve não é válido' })

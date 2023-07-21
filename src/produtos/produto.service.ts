@@ -40,7 +40,9 @@ export class ProdutoService {
     async update(id: string, produto: Partial<Produto>): Promise<Produto> {
         const produtoExistente = await this.findProduct(id);
 
-        await this.produtoRepository.update(id, produto);
+        Object.assign(produtoExistente, produto);
+
+        await this.produtoRepository.save(produtoExistente);
 
         return produtoExistente;
 
