@@ -6,9 +6,11 @@ import {
     DeleteDateColumn,
     PrimaryGeneratedColumn,
     ManyToOne,
+    OneToMany,
 } from 'typeorm';
 import { StatusPedido } from './enum/statuspedido.enum';
 import { Usuario } from '../models/usuario.entity';
+import { ItemPedido } from './itemPedido.entity';
 
 @Entity({ name: 'pedidos' })
 export class Pedido {
@@ -21,8 +23,16 @@ export class Pedido {
     @Column({ name: 'status', enum: StatusPedido, nullable: false })
     status: StatusPedido;
 
-    @ManyToOne(() => Usuario, usuario => usuario.pedidos, { orphanedRowAction: 'delete', onDelete: 'CASCADE', onUpdate: 'CASCADE' })
+    @ManyToOne(() => Usuario, 
+        usuario => usuario.pedidos, 
+        { orphanedRowAction: 'delete', onDelete: 'CASCADE', onUpdate: 'CASCADE' })
     usuario: Usuario;
+
+    @OneToMany(() => ItemPedido, 
+        (itemPedido) => itemPedido.pedido,
+        { cascade: true, eager: true }
+    )
+    itensPedido: ItemPedido[];
 
     @CreateDateColumn({ name: 'created_at' })
     createdAt: string;

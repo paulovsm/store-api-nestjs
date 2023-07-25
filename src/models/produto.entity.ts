@@ -1,8 +1,9 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, OneToMany } from 'typeorm';
 import { CaracteristicaProduto } from "./caracteristicaProduto.entity"
 import { ImagemProduto } from "./imagemProduto.entity"
+import { ItemPedido } from '../pedido/itemPedido.entity';
 
-@Entity({ name: 'produtos'})
+@Entity({ name: 'produtos' })
 export class Produto {
     @PrimaryGeneratedColumn('uuid')
     id: string;
@@ -23,16 +24,21 @@ export class Produto {
     categoria: string;
 
     @OneToMany(
-        () => CaracteristicaProduto, 
+        () => CaracteristicaProduto,
         caracteristicaProduto => caracteristicaProduto.produto,
-        { cascade: true, eager: true } )
+        { cascade: true, eager: true })
     caracteristicas: CaracteristicaProduto[];
 
     @OneToMany(
-        () => ImagemProduto, 
+        () => ImagemProduto,
         imagemProduto => imagemProduto.produto,
         { cascade: true, eager: true })
     imagens: ImagemProduto[];
+
+    @OneToMany(
+        () => ItemPedido, 
+        (itemPedido) => itemPedido.produto)
+    itensPedido: ItemPedido[];
 
     @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', name: 'created_at' })
     dataCriacao: Date;
