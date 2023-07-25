@@ -1,4 +1,5 @@
-import { Entity, Column, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, PrimaryGeneratedColumn } from 'typeorm';
+import { Pedido } from '../pedido/pedido.entity';
+import { Entity, Column, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
 @Entity({ name: 'usuarios' })
 export class Usuario {
@@ -13,6 +14,9 @@ export class Usuario {
 
     @Column({ type: 'varchar', length: 255, nullable: false })
     senha: string;
+
+    @OneToMany(() => Pedido, pedido => pedido.usuario, { cascade: true, eager: true } )
+    pedidos: Pedido[];
 
     @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', name: 'created_at' })
     createdAt: Date;
