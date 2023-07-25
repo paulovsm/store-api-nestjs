@@ -48,8 +48,4 @@ export class AtualizaProdutoDTO {
     @IsDateString({}, { message: 'A data de atualização do produto deve ser uma data válida' })
     @IsOptional()
     dataAtualizacao: Date;
-
-    @IsUUID(4, { message: 'O id do usuário deve não é válido' })
-    @IsOptional()
-    usuarioId: string;
 }

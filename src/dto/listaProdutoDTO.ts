@@ -6,5 +6,4 @@ export interface ListaProdutoDTO {
     categoria: string;
     dataCriacao: Date;
     dataAtualizacao: Date;
-    usuarioId: string;
 }
