@@ -1,11 +1,10 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject, NotFoundException, BadRequestException } from '@nestjs/common';
 import { CreatePedidoDto } from './dto/create-pedido.dto';
 import { UpdatePedidoDto } from './dto/update-pedido.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Pedido } from './pedido.entity';
 import { Usuario } from 'src/models/usuario.entity';
 import { In, Repository } from 'typeorm';
-import { v4 as uuidv4 } from 'uuid';
 import { StatusPedido } from './enum/statuspedido.enum';
 import { ItemPedido } from './itemPedido.entity';
 import { Produto } from 'src/models/produto.entity';
@@ -23,11 +22,13 @@ export class PedidoService {
 
   async create(createPedidoDto: CreatePedidoDto, usuarioId: string) {
     const pedido = new Pedido();
-    const usuario = await this.usuarioRepository.findOneBy({ id: usuarioId });
+    const usuario = await this.findUsuario(usuarioId);
     const produtosIds = createPedidoDto.itensPedido.map((itemPedido) => itemPedido.produtoId);
     const produtosRelacionados = await this.produtoRepository.findBy({ id: In(produtosIds) });
 
     Object.assign(pedido, createPedidoDto);
+    
+    this.trataDadosDoPedido(createPedidoDto, produtosRelacionados);
 
     const itensPedidos = createPedidoDto.itensPedido.map((itemPedido) => {
       const itemPedidoEntity = new ItemPedido();
@@ -39,7 +40,7 @@ export class PedidoService {
       itemPedidoEntity.precoVenda = produtoRelacionado.valor;
       itemPedidoEntity.quantidade = itemPedido.quantidade;
       itemPedidoEntity.produto.quantidadeDisponivel -= itemPedido.quantidade;
-      
+
       return itemPedidoEntity
     })
 
@@ -59,6 +60,17 @@ export class PedidoService {
     }
 
     return pedidoCriado.id;
+  }
+
+  private async findUsuario(usuarioId: string) {
+    const usuario = await this.usuarioRepository.findOneBy({ id: usuarioId });
+
+    if (!usuario) {
+      throw new NotFoundException('Usuário não encontrado');
+    }
+
+    return usuario;
+
   }
 
   async findAll(): Promise<Pedido[]> {
@@ -111,9 +123,32 @@ export class PedidoService {
     const pedido = await this.findById(id);
 
     if (!pedido) {
-      throw new Error('Produto não encontrado');
+      throw new Error('Pedido não encontrado');
     }
 
     return pedido;
   }
+
+  private trataDadosDoPedido(dadosDoPedido: CreatePedidoDto, produtosRelacionados: Produto[]) {
+
+    dadosDoPedido.itensPedido.forEach((itemPedido) => {
+      const produtoRelacionado = produtosRelacionados.find(
+        (produto) => produto.id === itemPedido.produtoId,
+      );
+
+      if (!produtoRelacionado) {
+        throw new NotFoundException(`Produto com ID ${itemPedido.produtoId} não encontrado`);
+      }
+
+      if (itemPedido.quantidade > produtoRelacionado.quantidadeDisponivel) {
+        throw new BadRequestException(
+          `A quantidade solicitada (${itemPedido.quantidade}) é maior do que a disponível (${produtoRelacionado.quantidadeDisponivel}) 
+          para o produto ${produtoRelacionado.nome}.`,
+        );
+      }
+
+    });
+
+  }
+
 }

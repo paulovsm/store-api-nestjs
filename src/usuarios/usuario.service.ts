@@ -1,6 +1,6 @@
 import { Usuario } from "../models/usuario.entity";
 import { v4 as uuidv4 } from 'uuid';
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 
@@ -64,7 +64,7 @@ export class UsuarioService {
         const usuario = await this.buscarPorId(id);
 
         if (!usuario) {
-            throw new Error('Usuário não encontrado');
+            throw new NotFoundException('Usuário não encontrado');
         }
 
         return usuario;
