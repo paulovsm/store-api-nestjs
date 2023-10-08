@@ -134,4 +134,5 @@ dist
 source_documents/
 webscraper*
 .aider*
-#source_data/
+source_data/
+output_data/
